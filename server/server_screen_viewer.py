@@ -42,8 +42,21 @@ class ScreenViewer:
                 print(f"Error receiving or displaying frame: {e}")
 
     def display_frame(self, frame):
+        # Resize the frame to fit the canvas
+        frame_height, frame_width = frame.shape[:2]
+        canvas_width = self.canvas.winfo_width()
+        canvas_height = self.canvas.winfo_height()
+
+        scale_width = canvas_width / frame_width
+        scale_height = canvas_height / frame_height
+        scale = min(scale_width, scale_height)
+
+        new_width = int(frame_width * scale)
+        new_height = int(frame_height * scale)
+        resized_frame = cv2.resize(frame, (new_width, new_height))
+
         # Convert the frame to a format suitable for display on the canvas
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        frame = cv2.cvtColor(resized_frame, cv2.COLOR_BGR2RGB)
         image = Image.fromarray(frame)
         image_tk = ImageTk.PhotoImage(image)
 
