@@ -11,7 +11,7 @@ A basic client-server apllication for private Local Area Networks to monitor the
 ToDo
 
 ## Notes for team
-
+### Configuration
 1. Create a python virtual environment.
 2. Install the following dependencies
 ```python
@@ -44,4 +44,7 @@ HEADER_SIZE = 20
 python -m client.client_gui
 python -m server.server_gui
 ```
-
+### To Develop
+1. Combine the viewer screen with GUI (Server)
+2. Use multi-threading to enhance the efficiency of the application
+3. Screen freezing feature is not yet implemented
