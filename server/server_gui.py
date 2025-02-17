@@ -1,10 +1,12 @@
 import tkinter as tk
 from tkinter import ttk
 import threading
+import cv2
+from PIL import Image, ImageTk
 
 from config import SERVER_IP
+from server.server_screen_viewer import ScreenViewer
 from .server_network import ServerNetwork
-from .server_screen_viewer import ScreenViewer
 
 class ServerGUI:
     def __init__(self, master):
@@ -24,7 +26,7 @@ class ServerGUI:
 
         # Add tabs to the notebook
         self.notebook.add(self.config_tab, text="Server Configuration")
-        self.notebook.add(self.history_tab, text="Client History")
+        self.notebook.add(self.history_tab, text="History & Connected Clients")
         self.notebook.add(self.monitor_tab, text="Client Monitoring")
 
         # Server Configuration tab content
@@ -32,6 +34,8 @@ class ServerGUI:
         self.server_status_label.pack(anchor="nw", pady=10)
 
         # History & Connected Clients tab content
+        self.connection_label = tk.Label(self.history_tab, text="No clients connected", font=("Helvetica", 12))
+        self.connection_label.pack(anchor="nw", pady=10)
 
         self.connected_clients_history_frame = ttk.LabelFrame(self.history_tab, text="Currently Connected Clients", padding="10")
         self.connected_clients_history_frame.pack(anchor="nw", fill="x", padx=10, pady=(10, 0))
@@ -91,6 +95,10 @@ class ServerGUI:
         self.screen_viewer_frame = tk.Frame(self.monitor_tab, width=896, height=800, bg="black")
         self.screen_viewer_frame.pack(side="left", fill="both", expand=True, padx=10, pady=10)
         self.screen_viewer_frame.pack_propagate(False)
+
+        # Create canvas for screen viewer
+        self.canvas = tk.Canvas(self.screen_viewer_frame, bg="black")
+        self.canvas.pack(fill="both", expand=True)
 
         self.server_network = ServerNetwork(self)
         self.server_network.start()
@@ -156,7 +164,7 @@ class ServerGUI:
 
     def start_screen_viewer(self, server_ip):
         if not self.screen_viewer:
-            self.screen_viewer = ScreenViewer(server_ip)  # Initialize ScreenViewer with the server's IP
+            self.screen_viewer = ScreenViewer(self.canvas, server_ip)  # Initialize ScreenViewer with the canvas and server's IP
             self.screen_viewer.start()
             self.see_screen_button.config(state="disabled")
             self.stop_view_screen_button.config(state="normal")
