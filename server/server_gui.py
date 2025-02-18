@@ -4,7 +4,7 @@ import threading
 import cv2
 from PIL import Image, ImageTk
 
-from config import SERVER_IP
+from config import SERVER_IP, FRAME_WIDTH, FRAME_HEIGHT
 from server.server_screen_viewer import ScreenViewer
 from .server_network import ServerNetwork
 
@@ -30,7 +30,7 @@ class ServerGUI:
         self.notebook.add(self.monitor_tab, text="Client Monitoring")
 
         # Server Configuration tab content
-        self.server_status_label = tk.Label(self.config_tab, text="Server Status: Active", font=("Helvetica", 14))
+        self.server_status_label = tk.Label(self.config_tab, text="Server Status: Active", font=("Helvetica", 12))
         self.server_status_label.pack(anchor="nw", pady=10)
 
         # History & Connected Clients tab content
@@ -65,6 +65,9 @@ class ServerGUI:
         self.left_frame.pack_propagate(False)
 
         # Subsections in left_frame
+        self.left_frame_label = tk.Label(self.left_frame, text="Viewer Configurations", font=("Helvetica", 12))
+        self.left_frame_label.pack(anchor="nw", pady=10)
+
         self.client_list_frame = tk.Frame(self.left_frame)
         self.client_list_frame.pack(fill="x", pady=(0, 10))
 
@@ -92,12 +95,16 @@ class ServerGUI:
         self.control_panel_label.pack(anchor="nw", pady=10)
 
         # Screen Viewer section
-        self.screen_viewer_frame = tk.Frame(self.monitor_tab, width=896, height=800, bg="black")
-        self.screen_viewer_frame.pack(side="left", fill="both", expand=True, padx=10, pady=10)
+        
+        self.screen_viewer_frame = tk.Frame(self.monitor_tab, width=FRAME_WIDTH, height=FRAME_HEIGHT)
+        self.screen_viewer_frame.pack(side="left", padx=10, pady=10)
         self.screen_viewer_frame.pack_propagate(False)
 
+        self.screen_viewer_frame_label = tk.Label(self.screen_viewer_frame, text="Screen Viewer", font=("Helvetica", 12))
+        self.screen_viewer_frame_label.pack(anchor="nw", pady=10)
+
         # Create canvas for screen viewer
-        self.canvas = tk.Canvas(self.screen_viewer_frame, bg="black")
+        self.canvas = tk.Canvas(self.screen_viewer_frame, width=FRAME_WIDTH, height=FRAME_HEIGHT)
         self.canvas.pack(fill="both", expand=True)
 
         self.server_network = ServerNetwork(self)
